@@ -1,3 +1,5 @@
+using WebApp.DataBaseSettings;
+
 namespace WebApp
 {
     public class Program
@@ -8,6 +10,14 @@ namespace WebApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            ConfigurationManager config = builder.Configuration;
+
+            string defaultConnectionString = config.GetConnectionString("DefaultConnection") ?? "None";
+            var dbContext = new DefaultDBContext(defaultConnectionString);
+
+            builder.Services.AddSingleton<IConfiguration>(config);
+            builder.Services.AddSingleton<IDBContext>(dbContext);
 
             var app = builder.Build();
 

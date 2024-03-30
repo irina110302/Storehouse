@@ -1,0 +1,37 @@
+﻿@model IEnumerable<WebApp.Services.StorehouseViewModel>
+
+@{
+    ViewData["Title"] = "Storehouses List";
+}
+
+<h1>Available storehouses</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.ActionLink("Add Supply", "Create", "Supply", new { id = item.Id })
+                @Html.ActionLink("View Products", "Index", "Product", new { id = item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
