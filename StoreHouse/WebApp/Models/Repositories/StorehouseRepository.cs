@@ -10,7 +10,7 @@ namespace WebApp.Models.Repositories
         private static readonly string s_idField = "Id";
         private static readonly string s_addressField = "Address";
 
-        public static string SelectAllQuery = $"SELECT {s_idField}, {s_addressField} FROM {s_tableName}";
+        public static string SelectAllQuery => $"SELECT * FROM {s_tableName}";
 
         public StorehouseRepository(IDBContext dbContext) : base(dbContext) 
         {
@@ -27,7 +27,7 @@ namespace WebApp.Models.Repositories
             return Connection.Query<Storehouse>(query); 
         }
 
-        public override Storehouse Insert(Storehouse entity)
+        public override void Insert(Storehouse entity)
         {
             throw new NotImplementedException();
         }

@@ -16,7 +16,7 @@ namespace WebApp.Models.Repositories
 
         protected MySqlConnection Connection => _dbContext.DefaultConnection;
 
-        public abstract T Insert(T entity);
+        public abstract void Insert(T entity);
 
         public abstract void Update(T entity);
 
