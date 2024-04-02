@@ -20,5 +20,12 @@ namespace WebApp.Controllers
         {
             return View(_service.GetViewModelsList());
         }
+
+        public ActionResult SelectStorehouse(int supplierId)
+        {
+            ViewBag.SupplierId = supplierId;
+
+            return View("Index", _service.GetViewModelsList());
+        }
     }
 }
