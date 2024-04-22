@@ -6,14 +6,44 @@ namespace WebApp.Services
     public class SupplyService
     {
         private readonly ARepository<Supply> _supplyRepository;
-        private readonly ARepository<ProductInSupply> _productInSupplyRepo;
+        private readonly ARepository<Storehouse> _storehouseRepository;
+        private readonly ARepository<Supplier> _supplierRepository;
 
         public SupplyService(
             ARepository<Supply> supplyRepository, 
-            ARepository<ProductInSupply> productInSupplyRepo) 
-        { 
+            ARepository<Supplier> supplierRepository,
+            ARepository<Storehouse> storehouseRepository)
+        {
             _supplyRepository = supplyRepository;
-            _productInSupplyRepo = productInSupplyRepo;
+            _supplierRepository = supplierRepository;
+            _storehouseRepository = storehouseRepository;
+        }
+
+        public List<SupplyViewModel> GetViewModels()
+        {
+            IEnumerable<Supplier> suppliers = _supplierRepository.ExecuteQuery(SupplierRepository.SelectAllQuery);
+            IEnumerable<Storehouse> storehouses = _storehouseRepository.ExecuteQuery(StorehouseRepository.SelectAllQuery);   
+
+            return _supplyRepository
+                .ExecuteQuery(SupplyRepository.SelectAllQuery)
+                .Select(entity => 
+                    new SupplyViewModel(
+                        entity, 
+                        storehouses.FirstOrDefault(supplier => supplier.Id == entity.SupplierId),
+                        suppliers.FirstOrDefault(supplier => supplier.Id == entity.SupplierId)
+                        )
+                    )
+                .ToList();
+        }
+
+        public void CreateSupply(int supplierId, int storehouseId) 
+        {
+            _supplyRepository.Insert(new Supply(supplierId, storehouseId));
+        }
+
+        public void RemoveSupply(int supplyId)
+        {
+            _supplyRepository.Delete(new Supply(supplyId));
         }
     }
 
@@ -25,22 +55,21 @@ namespace WebApp.Services
 
         public int SupplierId { get; set; }
 
+        public string StorehouseAddress { get; set; }
+
+        public string SupplierName { get; set; }
+
         public DateTime DateTime { get; set; }
 
-        public decimal TotalPrice { get; set; }
-
-        public SupplyViewModel(Supply supply)
+        
+        public SupplyViewModel(Supply supply, Storehouse storehouse, Supplier supplier)
         {
             Id = supply.Id;
             StorehouseId = supply.StorehouseId;
             SupplierId = supply.SupplierId;
             DateTime = supply.DateTime;
-            TotalPrice = supply.TotalPrice;
+            StorehouseAddress = storehouse.Address;
+            SupplierName = supplier.Name;
         }
-    }
-
-    public class SupplyEditViewModel
-    {
-
     }
 }

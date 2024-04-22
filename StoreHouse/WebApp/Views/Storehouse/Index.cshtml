@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<WebApp.Services.StorehouseViewModel>
 
 @{
-    ViewData["Title"] = "Suppliers";
+    ViewData["Title"] = "Storehouses";
 }
 
 <h1>Storehouses view</h1>
@@ -24,9 +24,10 @@
             <td>
                 @if (ViewBag.SupplierId != null)
                 {
-                    @Html.ActionLink("Add Supply", "Create", "Supply", new { 
-                        supplyId = ViewBag.SupplierId, storehouseId = item.Id 
-                    })
+                    @Html.ActionLink("Add Supply", "Create", "Supply", new {
+                                supplierId = ViewBag.SupplierId,
+                                storehouseId = item.Id
+                            })
                 }
                 else
                 {

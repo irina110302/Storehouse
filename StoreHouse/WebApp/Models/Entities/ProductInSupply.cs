@@ -1,31 +1,29 @@
 ﻿namespace WebApp.Models.Entities
 {
-    public class ProductInSupply : Product
+    public class ProductInSupply
     {
+        public int Id { get; set; }
+
         public int SupplyId { get; set; }
+
+        public Sku Sku { get; set; } = new Sku("");
 
         public int Amount { get; set; }
 
         public decimal Price { get; set; }
 
-        public ProductInSupply(string sku) : base(sku)
+        public ProductInSupply(int id, int supplyId)
         {
-
+            Id = id;
+            SupplyId = supplyId;
         }
 
-        public ProductInSupply(
-            int supplyId,
-            string name, 
-            string manufacturer, 
-            string color, 
-            DateTime productionDate, 
-            int amount, 
-            decimal price
-            ) : base(name, manufacturer, color, productionDate)
+        public ProductInSupply(int id, int supplyId, Sku sku, int amount, decimal price)
+            : this(id, supplyId)
         {
-            SupplyId = supplyId;
-            Price = price;
+            Sku = sku;
             Amount = amount;
+            Price = price;
         }
     }
 }

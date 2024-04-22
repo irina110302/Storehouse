@@ -23,7 +23,7 @@ namespace WebApp.Models.Repositories
         public override void Delete(Supply entity)
         {
             string query =
-                $"DELETE FROM {s_tableName}" +
+                $"DELETE FROM {s_tableName} " +
                 $"WHERE {s_tableName}.{s_idField} = {entity.Id}";
 
             Connection.Execute(query);
@@ -37,7 +37,7 @@ namespace WebApp.Models.Repositories
         public override void Insert(Supply entity)
         {
             string query = 
-                $"INSERT INTO {s_tableName} ({s_storehouseIdField},{s_supplierIdField})" +
+                $"INSERT INTO {s_tableName} ({s_storehouseIdField},{s_supplierIdField}) " +
                 $"VALUES ({entity.StorehouseId}, {entity.SupplierId})";
 
             Connection.Execute(query);

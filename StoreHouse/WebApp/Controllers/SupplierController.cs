@@ -25,7 +25,7 @@ namespace WebApp.Controllers
         {
             ViewBag.StorehouseId = storehouseId;
 
-            return View("Index", _service.GetSupplierViewModels());
+            return View(nameof(Index), _service.GetSupplierViewModels());
         }
     }
 }
