@@ -16,6 +16,14 @@ namespace WebApp.Controllers
             _service = new ProductService(productRepository);
         }
 
+        [HttpPost]
+        public IActionResult Index(string searchString)
+        {
+            string searchRequest = searchString.TrimEnd().TrimStart().ToLower();
+
+            return View(_service.GetViewModels(searchRequest));
+        }
+
         public IActionResult Index()
         {
             return View(_service.GetViewModels());

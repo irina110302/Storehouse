@@ -20,6 +20,14 @@ namespace WebApp.Services
                 .ToList();
         }
 
+        public List<ProductViewModel> GetViewModels(string searchRequest)
+        {
+            return _productRepository
+                .ExecuteQuery(ProductRepository.SelectByName(searchRequest))
+                .Select(product => new ProductViewModel(product))
+                .ToList();
+        }
+
         public void AddProduct(ProductEditViewModel newProduct)
         {
             _productRepository.Insert(newProduct.ProductEntity);

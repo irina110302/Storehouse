@@ -6,10 +6,21 @@
 
 <h1>Products</h1>
 
-@if (ViewBag.IsSelectionMode is not null && !ViewBag.IsSelectionMode)
+@if (ViewBag.IsSelectionMode is null)
 {
     <p>
         <a asp-action="Create">Create New</a>
+    </p>
+
+    <form asp-action="Index">
+        <p>
+            Product name: <input type="text" name="SearchString" />
+            <input type="submit" value="Filter" />
+        </p>
+    </form>
+
+    <p>
+        <a asp-action="Index">Reset search request</a>
     </p>
 }
 

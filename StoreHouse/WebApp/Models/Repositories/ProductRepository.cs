@@ -17,10 +17,18 @@ namespace WebApp.Models.Repositories
         private static readonly string s_colorNameField = "Id";
 
         public static string SelectAllQuery => 
-            $"SELECT `p`.{s_idField}, `p`.{s_nameField}, `p`.{s_manufacturerField}, `c`.* " +
+            $"SELECT `p`.{s_idField}, `p`.`{s_nameField}`, `p`.{s_manufacturerField}, `c`.* " +
             $"FROM {s_tableName} as `p`" +
             $"LEFT OUTER JOIN {s_colorTableName} as `c` " +
             $"ON `p`.{s_colorField} = `c`.{s_colorIdField}";
+
+        public static string SelectByName(string name) =>
+            $"SELECT `p`.{s_idField}, LOWER(`p`.`{s_nameField}`) as '{s_nameField}', `p`.{s_manufacturerField}, " +
+            $"`c`.* " +
+            $"FROM {s_tableName} as `p`" +
+            $"LEFT OUTER JOIN {s_colorTableName} as `c` " +
+            $"ON `p`.{s_colorField} = `c`.{s_colorIdField} " +
+            $"WHERE `p`.`{s_nameField}` LIKE '%{name}%'";
 
         public static string SelectById(int id) => 
             $"{SelectAllQuery} WHERE `p`.{s_colorIdField} = {id}";
