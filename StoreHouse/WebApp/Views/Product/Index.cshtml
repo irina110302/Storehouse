@@ -4,11 +4,15 @@
     ViewData["Title"] = "Products list";
 }
 
-<h1>Index</h1>
+<h1>Products</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (ViewBag.IsSelectionMode is not null && !ViewBag.IsSelectionMode)
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -37,7 +41,15 @@
                 @Html.DisplayFor(modelItem => item.ColorName)
             </td>
             <td>
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                @if (ViewBag.IsSelectionMode is not null && ViewBag.IsSelectionMode)
+                {
+                    @Html.ActionLink("Select", "AddProductToSupply", "ProductInSupply",
+                        new { productId = item.Id, supplyId = ViewBag.SupplyId })
+                }
+                else
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                }
             </td>
         </tr>
 }

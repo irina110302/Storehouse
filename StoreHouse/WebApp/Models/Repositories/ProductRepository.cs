@@ -44,7 +44,8 @@ namespace WebApp.Models.Repositories
 
         public override IEnumerable<Product> ExecuteQuery(string query)
         {
-            return Connection.Query<Product, Color, Product>(
+            using var CurrentConnection = Connection;
+            return CurrentConnection.Query<Product, Color, Product>(
                 query, 
                 (product, color) => 
                 {
@@ -61,7 +62,8 @@ namespace WebApp.Models.Repositories
                 $"VALUES " +
                 $"('{entity.Name}', '{entity.Manufacturer}', {(entity.Color is null ? "NULL" : entity.Color?.Id)})";
 
-            Connection.Execute(query);
+            using var CurrentConnection = Connection;
+            CurrentConnection.Execute(query);
         }
 
         public override void Update(Product entity)

@@ -6,22 +6,27 @@
 
         public int SupplyId { get; set; }
 
-        public Sku Sku { get; set; } = new Sku("");
+        public string SKU { get; set; } = string.Empty;
 
         public int Amount { get; set; }
 
         public decimal Price { get; set; }
 
-        public ProductInSupply(int id, int supplyId)
+        public ProductInSupply(int id)
         {
             Id = id;
+        }
+
+        public ProductInSupply(int id, int supplyId)
+            : this(id)
+        {
             SupplyId = supplyId;
         }
 
-        public ProductInSupply(int id, int supplyId, Sku sku, int amount, decimal price)
+        public ProductInSupply(int supplyId, int amount, decimal price, string sku, int id)
             : this(id, supplyId)
         {
-            Sku = sku;
+            SKU = sku;
             Amount = amount;
             Price = price;
         }

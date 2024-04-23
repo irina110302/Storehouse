@@ -36,6 +36,11 @@ namespace WebApp.Services
                 .ToList();
         }
 
+        public SupplyViewModel? GetViewModelById(int supplyId)
+        {
+            return GetViewModels().FirstOrDefault(supply => supply.Id == supplyId);
+        }
+
         public void CreateSupply(int supplierId, int storehouseId) 
         {
             _supplyRepository.Insert(new Supply(supplierId, storehouseId));

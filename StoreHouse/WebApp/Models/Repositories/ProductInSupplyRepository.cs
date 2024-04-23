@@ -26,24 +26,27 @@ namespace WebApp.Models.Repositories
         public override void Delete(ProductInSupply entity)
         {
             string query =
-                $"DELETE FROM {s_tableName}" +
+                $"DELETE FROM {s_tableName} " +
                 $"WHERE {s_tableName}.{s_idField} = {entity.Id}";
 
-            Connection.Execute(query);
+            using var CurrentConnection = Connection;
+            CurrentConnection.Execute(query);
         }
 
         public override IEnumerable<ProductInSupply> ExecuteQuery(string query)
         {
-            return Connection.Query<ProductInSupply>(query);
+            using var CurrentConnection = Connection;
+            return CurrentConnection.Query<ProductInSupply>(query);
         }
 
         public override void Insert(ProductInSupply entity)
         {
             string query =
                 $"INSERT INTO {s_tableName} ({s_skuField},{s_supplyIdField},{s_priceField},{s_amountField})" +
-                $"VALUES ({entity.Sku},{entity.SupplyId},{entity.Price},{entity.Amount})";
+                $"VALUES ('{entity.SKU}',{entity.SupplyId},{entity.Price},{entity.Amount})";
 
-            Connection.Execute(query);
+            using var CurrentConnection = Connection;
+            CurrentConnection.Execute(query);
         }
 
         public override void Update(ProductInSupply entity)

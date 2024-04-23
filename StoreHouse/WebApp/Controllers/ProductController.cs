@@ -26,6 +26,7 @@ namespace WebApp.Controllers
             return View(nameof(Create));
         }
 
+        [HttpPost]
         public IActionResult Delete(int id)
         {
             _service.DeleteProduct(id);
@@ -38,6 +39,14 @@ namespace WebApp.Controllers
         public IActionResult Create(ProductEditViewModel product)
         {
             _service.AddProduct(product);
+
+            return View(nameof(Index), _service.GetViewModels());
+        }
+
+        public IActionResult SelectProductForSupply(int supplyId)
+        {
+            ViewBag.IsSelectionMode = true;
+            ViewBag.SupplyId = supplyId;
 
             return View(nameof(Index), _service.GetViewModels());
         }

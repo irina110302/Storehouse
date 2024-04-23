@@ -12,16 +12,13 @@ namespace WebApp.Models.Repositories
         private static readonly string s_saleKField = "SaleK";
 
         private static string GetSku(int productId, DateTime productionDate, decimal saleK) => 
-            $"(SELECT `GetSku`({productId}, {productionDate}, {saleK}));";
+            $"(SELECT `GetSku`({productId}, '{productionDate:yyyy-MM-dd}', {saleK}))";
 
         public static string SelectSKUBySKU(string sku) =>
-            $"SELECT * FROM {s_tableName} as `s` WHERE `s`.{s_skuField} = {sku};";
+            $"SELECT * FROM {s_tableName} as `s` WHERE `s`.{s_skuField} = '{sku}'";
 
         public static string SelectSKUByData(int productId, DateTime productionDate, decimal saleK) =>
-            $"START TRANSACTION;" +
-            $"SET @sku = {GetSku(productId, productionDate, saleK)}" +
-            $"{SelectSKUBySKU("@sku")}" +
-            $"COMMIT;";
+            $"SELECT * FROM {s_tableName} as `s` WHERE `s`.{s_skuField} = {GetSku(productId, productionDate, saleK)}";
 
         public SkuRepository(IDBContext dBContext) : base(dBContext) 
         { 
@@ -35,12 +32,16 @@ namespace WebApp.Models.Repositories
 
         public override IEnumerable<Sku> ExecuteQuery(string query)
         {
-            return Connection.Query<Sku>(query);
+            using var CurrentConnection = Connection;
+            CurrentConnection.Open();
+            return CurrentConnection.Query<Sku>(query, commandType: System.Data.CommandType.Text);
         }
 
         public override void Insert(Sku entity)
         {
-            string? sku = Connection
+            using var CurrentConnection = Connection;
+
+            string? sku = CurrentConnection
                 .Query<string>(GetSku(entity.ProductId, entity.ProductionDate, entity.SaleK))
                 .FirstOrDefault();
 

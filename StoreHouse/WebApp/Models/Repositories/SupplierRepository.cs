@@ -22,7 +22,8 @@ namespace WebApp.Models.Repositories
 
         public override IEnumerable<Supplier> ExecuteQuery(string query)
         {
-            return Connection.Query<Supplier>(query);
+            using var CurrentConnection = Connection;
+            return CurrentConnection.Query<Supplier>(query);
         }
 
         public override void Insert(Supplier entity)

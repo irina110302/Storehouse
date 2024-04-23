@@ -1,90 +1,169 @@
-﻿using WebApp.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using System.Configuration;
+using WebApp.Models.Entities;
 using WebApp.Models.Repositories;
 
 namespace WebApp.Services
 {
     public class ProductInSupplyService
     {
-        private readonly ARepository<Supply> _supplyRepository;
         private readonly ARepository<ProductInSupply> _productInSupplyRepo;
         private readonly ARepository<Product> _productRepository;
         private readonly ARepository<Sku> _skuRepository;
 
+        private readonly SupplyService _supplyService;
+
         public ProductInSupplyService(
-            ARepository<Supply> supplyRepository,
             ARepository<ProductInSupply> productInSupplyRepo,
             ARepository<Product> productRepository,
-            ARepository<Sku> skuRepository)
+            ARepository<Sku> skuRepository,
+            SupplyService supplyService)
         {
-            _supplyRepository = supplyRepository;
             _productInSupplyRepo = productInSupplyRepo;
             _productRepository = productRepository;
             _skuRepository = skuRepository;
+
+            _supplyService = supplyService;
         }
 
-        //public SupplyEditViewModel GetSupplyEditViewModel(int supplyId)
-        //{
-        //    Supply supply = _supplyRepository
-        //        .ExecuteQuery(SupplyRepository.SelectById(supplyId))
-        //        .First();
+        public SupplyEditViewModel GetSupplyEditViewModel(int supplyId)
+        {
+            SupplyViewModel supply = _supplyService.GetViewModelById(supplyId) 
+                ?? throw new NullReferenceException();
 
-        //    //List<Sku> skus = _skuRepository.ExecuteQuery(SkuRepository.)
-        //    return new SupplyEditViewModel();
-        //}
+            List<ProductInSupplyViewModel> productsInSupply = _productInSupplyRepo
+                .ExecuteQuery(ProductInSupplyRepository.SelectBySupplyId(supplyId))
+                .Select(entity => new ProductInSupplyViewModel(entity))
+                .ToList();
+
+            foreach (var item in productsInSupply)
+            {
+                Sku sku = _skuRepository
+                    .ExecuteQuery(SkuRepository.SelectSKUBySKU(item.Sku))
+                    .FirstOrDefault()
+                    ?? throw new NullReferenceException();
+                
+                item.SetSkuData(sku);
+                
+                Product product = _productRepository
+                    .ExecuteQuery(ProductRepository.SelectById(item.ProductId))
+                    .FirstOrDefault()
+                    ?? throw new NullReferenceException();
+
+                item.SetProductData(product);
+            }
+
+            return new SupplyEditViewModel(supply, productsInSupply.ToList());
+        }
+
+        public void AddProductToSupply(ProductInSupplyEditVM product)
+        {
+            _skuRepository.Insert(new Sku(string.Empty, product.ProductId, product.ProductionDate, product.SaleK));
+
+            Sku sku = _skuRepository
+                .ExecuteQuery(
+                    SkuRepository.SelectSKUByData(
+                        product.ProductId, product.ProductionDate, product.SaleK))
+                .FirstOrDefault()
+                ?? throw new NullReferenceException();
+
+            _productInSupplyRepo.Insert(new ProductInSupply(product.SupplyId, product.Amount, product.Price, sku.SKU, 0));
+        }
+
+        public void DeleteProductFromSupply(int productInSupplyId)
+        {
+            _productInSupplyRepo.Delete(new ProductInSupply(productInSupplyId));
+        }
     }
 
     public class ProductInSupplyViewModel
     {
-        public int Id { get; set; }
+        private ProductInSupply _productInSupply;
+        private Product _product;
+        private Sku _sku;
 
-        public string Name { get; set; } = string.Empty;
+        public int Id => _productInSupply.Id;
 
-        public string Manufacturer { get; set; } = string.Empty;
+        public string Sku => _productInSupply.SKU;
 
-        public DateTime ProductionDate { get; set; }
+        public int ProductId => _sku.ProductId;
 
-        public decimal SaleK { get; set; }
+        public string Name => _product.Name;
 
-        public decimal Price { get; set; }
+        public string Manufacturer => _product.Manufacturer;
 
-        public int Amount { get; set; }
+        public DateTime ProductionDate => _sku.ProductionDate;
 
-        public ProductInSupplyViewModel(ProductInSupply productInSupply, Product product, Sku sku)
+        public decimal SaleK => _sku.SaleK;
+
+        public decimal Price => _productInSupply.Price;
+
+        public int Amount => _productInSupply.Amount;
+
+        public ProductInSupplyViewModel(ProductInSupply productInSupply)
         {
-            Name = product.Name;
-            Manufacturer = product.Manufacturer;
+            _productInSupply = productInSupply;
+        }
 
-            ProductionDate = sku.ProductionDate;
-            SaleK = sku.SaleK;
+        public void SetProductData(Product product)
+        {
+            _product = product;
+        }
 
-            Id = productInSupply.Id;
-            Price = productInSupply.Price;
-            Amount = productInSupply.Amount;
+        public void SetSkuData(Sku sku)
+        {
+            _sku = sku;
         }
     }
 
-    public class ProductInSupplyAddVM
+    public class ProductInSupplyEditVM
     {
-        public int SkuId { get; set; }
+        [HiddenInput]
+        public int ProductId { get; set; }
 
+        [HiddenInput]
+        public int SupplyId { get; set; }
+
+        [Required]
+        public DateTime ProductionDate { get; set; }
+
+        [Required]
+        public decimal SaleK { get; set; }
+
+        [Required]
         public decimal Price { get; set; }
 
+        [Required]
         public int Amount { get; set; }
+
+        public ProductInSupplyEditVM()
+        {
+
+        }
+
+        public ProductInSupplyEditVM(int productId)
+        {
+            ProductId = productId;
+        }
+
+        public ProductInSupplyEditVM(int productId, int supplyId)
+        {
+            ProductId = productId;
+            SupplyId = supplyId;
+        }
     }
 
     public class SupplyEditViewModel
     {
-        public int Id { get; set; }
-
-        public List<Sku> AvailableSkus { get; }
+        public SupplyViewModel Supply { get; set; }
 
         public List<ProductInSupplyViewModel> Products { get; }
 
-        public SupplyEditViewModel(Supply supply, List<ProductInSupplyViewModel> products, List<Sku> availableSkus)
+        public SupplyEditViewModel(SupplyViewModel supply, List<ProductInSupplyViewModel> products)
         {
-            Id = supply.Id;
+            Supply = supply;
             Products = products;
-            AvailableSkus = availableSkus;
         }
     }
 }

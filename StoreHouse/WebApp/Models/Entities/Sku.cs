@@ -15,7 +15,7 @@
             this.SKU = SKU;
         }
 
-        public Sku(string SKU, DateTime productionDate, decimal saleK, int productId)
+        public Sku(string SKU, int productId, DateTime productionDate, decimal saleK)
             : this(SKU)
         {
             ProductionDate = productionDate;

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Supplies</h1>
 
 <p>
     <a asp-action="Create">Create supply</a>
@@ -43,7 +43,7 @@
                 @Html.DisplayFor(modelItem => item.DateTime)
             </td>
             <td>
-                    @Html.ActionLink("Edit", "Edit", new { supplyId = item.Id }) |
+                    @Html.ActionLink("Edit", "Index", "ProductInSupply", new { supplyId = item.Id }) |
                     @Html.ActionLink("Delete", "Delete", new { supplyId = item.Id })
             </td>
         </tr>

@@ -26,12 +26,14 @@ namespace WebApp.Models.Repositories
                 $"DELETE FROM {s_tableName} " +
                 $"WHERE {s_tableName}.{s_idField} = {entity.Id}";
 
-            Connection.Execute(query);
+            using var CurrentConnection = Connection;
+            CurrentConnection.Execute(query);
         }
 
         public override IEnumerable<Supply> ExecuteQuery(string query)
         {
-            return Connection.Query<Supply>(query);
+            using var CurrentConnection = Connection;
+            return CurrentConnection.Query<Supply>(query);
         }
 
         public override void Insert(Supply entity)
@@ -40,7 +42,8 @@ namespace WebApp.Models.Repositories
                 $"INSERT INTO {s_tableName} ({s_storehouseIdField},{s_supplierIdField}) " +
                 $"VALUES ({entity.StorehouseId}, {entity.SupplierId})";
 
-            Connection.Execute(query);
+            using var CurrentConnection = Connection;
+            CurrentConnection.Execute(query);
         }
 
         public override void Update(Supply entity)

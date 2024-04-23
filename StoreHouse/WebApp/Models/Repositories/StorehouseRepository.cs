@@ -24,7 +24,8 @@ namespace WebApp.Models.Repositories
 
         public override IEnumerable<Storehouse> ExecuteQuery(string query)
         {
-            return Connection.Query<Storehouse>(query); 
+            using var CurrentConnection = Connection;
+            return CurrentConnection.Query<Storehouse>(query); 
         }
 
         public override void Insert(Storehouse entity)
