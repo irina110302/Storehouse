@@ -10,6 +10,8 @@
 
         public DateTime DateTime { get; set; }
 
+        public decimal TotalPrice { get; set; }
+
         public Supply()
         {
 
@@ -26,12 +28,13 @@
             SupplierId = supplierId;
         }
 
-        public Supply(int id, int supplierId, int storehouseId, DateTime dateTime) 
+        public Supply(int id, int supplierId, int storehouseId, DateTime dateTime, decimal totalPrice) 
             : this(id)
         {
             StorehouseId = storehouseId;
             SupplierId = supplierId;
             DateTime = dateTime;
+            TotalPrice = totalPrice;
         }
     }
 }

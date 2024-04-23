@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<WebApp.Services.SupplyViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Supplies";
 }
 
 <h1>Supplies</h1>
@@ -24,6 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DateTime)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPrice)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -41,6 +44,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
                     @Html.ActionLink("Edit", "Index", "ProductInSupply", new { supplyId = item.Id }) |

@@ -12,12 +12,12 @@
     <div class="col-md-4">
         <form asp-action="SaveProduct">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group" style="display:none">
                 <label asp-for="ProductId" class="control-label"></label>
                 <input asp-for="ProductId" class="form-control" />
                 <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="display:none">
                 <label asp-for="SupplyId" class="control-label"></label>
                 <input asp-for="SupplyId" class="form-control" />
                 <span asp-validation-for="SupplyId" class="text-danger"></span>
@@ -50,7 +50,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to Supply</a>
+    @Html.ActionLink("Back", "Index", new { supplyId = Model.SupplyId })
 </div>
 
 @section Scripts {

@@ -66,6 +66,7 @@ namespace WebApp.Services
 
         public DateTime DateTime { get; set; }
 
+        public decimal TotalPrice { get; set; }
         
         public SupplyViewModel(Supply supply, Storehouse storehouse, Supplier supplier)
         {
@@ -75,6 +76,7 @@ namespace WebApp.Services
             DateTime = supply.DateTime;
             StorehouseAddress = storehouse.Address;
             SupplierName = supplier.Name;
+            TotalPrice = supply.TotalPrice;
         }
     }
 }

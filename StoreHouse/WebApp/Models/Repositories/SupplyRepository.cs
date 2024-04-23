@@ -11,10 +11,11 @@ namespace WebApp.Models.Repositories
         private static readonly string s_storehouseIdField = "StorehouseId";
         private static readonly string s_supplierIdField = "SupplierId";
 
-        public static string SelectAllQuery => $"SELECT * FROM {s_tableName}";
+        public static string SelectAllQuery => 
+            $"SELECT *, GetTotalSupplyPrice({s_idField}) as 'TotalPrice' FROM {s_tableName}";
 
         public static string SelectById(int id) => 
-            $"SELECT * FROM {s_tableName} WHERE {s_tableName}.{s_idField} = {id}";
+            $"{SelectAllQuery} WHERE {s_tableName}.{s_idField} = {id}";
 
         public SupplyRepository(IDBContext dBContext) : base(dBContext) 
         { 
